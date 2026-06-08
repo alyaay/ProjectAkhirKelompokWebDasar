@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard — Titipin Laundry</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.x/dist/tabler-icons.min.css"
+    />
+  </head>
+  <body>
+    <div class="dashboard-page">
+      <!-- TOPBAR -->
+      <div class="topbar">
+        <div class="topbar-brand">
+          <div class="topbar-brand-icon">🧺</div>
+          <span class="topbar-brand-text">Titipin Laundry</span>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-user">
+            <div class="topbar-avatar"><i class="ti ti-user"></i></div>
+            <div class="topbar-user-info">
+              <div class="topbar-user-name" id="namaUser">—</div>
+              <div class="topbar-user-role" id="roleUser">—</div>
+            </div>
+          </div>
+          <button class="btn-ghost" onclick="logout()" style="padding: 8px 16px; font-size: 13px">
+            <i class="ti ti-logout"></i>
+            Keluar
+          </button>
+        </div>
+      </div>
+
+      <!-- MAIN CONTENT -->
+      <div class="dashboard-content">
+        <!-- DATE BANNER -->
+        <div class="date-banner">
+          <div class="date-banner-left">
+            <h2>Selamat Datang! 👋</h2>
+            <p>Kelola pesanan laundry kamu di sini</p>
+          </div>
+          <div class="date-display">
+            <div class="date-day" id="dateDay">—</div>
+            <div class="date-month-year" id="dateMonthYear">— ——</div>
+            <div class="date-time" id="dateTime">——:——:——</div>
+          </div>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon stat-icon-pink"><i class="ti ti-basket"></i></div>
+            <div class="stat-num" id="statTotal">0</div>
+            <div class="stat-label">Total Pesanan</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon stat-icon-orange"><i class="ti ti-clock"></i></div>
+            <div class="stat-num" id="statProses">0</div>
+            <div class="stat-label">Dalam Proses</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon stat-icon-green"><i class="ti ti-circle-check"></i></div>
+            <div class="stat-num" id="statSelesai">0</div>
+            <div class="stat-label">Selesai</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon stat-icon-purple"><i class="ti ti-coin"></i></div>
+            <div class="stat-num" id="statBelumLunas">0</div>
+            <div class="stat-label">Belum Lunas</div>
+          </div>
+        </div>
+
+        <!-- FORM PEMESANAN (user only) -->
+        <div id="fiturUser" style="display: none">
+          <div class="card">
+            <p class="section-title">
+              <i class="ti ti-basket-plus"></i>
+              Form Pemesanan Laundry
+            </p>
+            <form id="orderForm">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px">
+                <div class="field-group">
+                  <label class="field-label">Jenis Layanan</label>
+                  <div class="field-wrap">
+                    <i class="ti ti-shirt field-icon"></i>
+                    <select id="jenisLayanan">
+                      <option value="Cuci Kering Setrika">Cuci Kering Setrika (Rp 7rb/kg)</option>
+                      <option value="Cuci Kering">Cuci Kering (Rp 5rb/kg)</option>
+                      <option value="Setrika Saja">Setrika Saja (Rp 4rb/kg)</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="field-group">
+                  <label class="field-label">Tanggal Pickup</label>
+                  <div class="field-wrap">
+                    <i class="ti ti-calendar field-icon"></i>
+                    <input type="date" id="tanggalPickup" required />
+                  </div>
+                </div>
+              </div>
+              <div class="field-group" style="margin-top: 4px">
+                <label class="field-label">Alamat Penjemputan</label>
+                <div class="field-wrap">
+                  <i class="ti ti-map-pin field-icon-top"></i>
+                  <textarea
+                    id="alamatPickup"
+                    placeholder="Tulis alamat lengkap untuk pickup..."
+                    required
+                  ></textarea>
+                </div>
+              </div>
+              <button type="submit" style="margin-top: 4px">
+                <i class="ti ti-truck-delivery"></i>
+                Pesan & Request Pickup
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- TABEL PESANAN -->
+        <div>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              margin-bottom: 1rem;
+              flex-wrap: wrap;
+              gap: 10px;
+            "
+          >
+            <p class="section-title" style="margin: 0">
+              <i class="ti ti-list-details"></i>
+              Daftar & Tracking Pesanan
+            </p>
+            <div class="search-bar" style="margin: 0; min-width: 240px">
+              <div class="field-wrap" style="flex: 1">
+                <i class="ti ti-search field-icon"></i>
+                <input
+                  type="text"
+                  id="searchInput"
+                  placeholder="Cari pesanan..."
+                  oninput="filterPesanan()"
+                  style="padding-top: 9px; padding-bottom: 9px"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table id="tabelPesanan">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Pelanggan</th>
+                  <th>Layanan</th>
+                  <th>Tgl Pickup</th>
+                  <th>Berat</th>
+                  <th>Total</th>
+                  <th>Status Laundry</th>
+                  <th>Pembayaran</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="listPesanan"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <p class="footer-note">
+          © 2025 Titipin Laundry · Kelompok 2 · Smart Laundry Pickup & Delivery System 💗
+        </p>
+      </div>
+    </div>
+
+    <!-- MODAL UPDATE ADMIN -->
+    <div class="modal-overlay" id="modalUpdate">
+      <div class="modal">
+        <div class="modal-header">
+          <span class="modal-title">✏️ Update Pesanan</span>
+          <button class="modal-close" onclick="closeModal()"><i class="ti ti-x"></i></button>
+        </div>
+        <input type="hidden" id="updateId" />
+        <div class="field-group">
+          <label class="field-label">Berat Laundry (Kg)</label>
+          <div class="field-wrap">
+            <i class="ti ti-weight field-icon"></i>
+            <input type="number" id="updateBerat" placeholder="Contoh: 2.5" step="0.1" min="0" />
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Status Laundry</label>
+          <div class="field-wrap">
+            <i class="ti ti-refresh field-icon"></i>
+            <select id="updateStatus">
+              <option value="Menunggu Pickup">Menunggu Pickup</option>
+              <option value="Proses Cuci">Proses Cuci</option>
+              <option value="Selesai">Selesai</option>
+              <option value="Siap Diantar">Siap Diantar</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Status Pembayaran</label>
+          <div class="field-wrap">
+            <i class="ti ti-coin field-icon"></i>
+            <select id="updatePembayaran">
+              <option value="Belum Lunas">Belum Lunas</option>
+              <option value="Lunas">Lunas</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn-outline"
+            onclick="closeModal()"
+            style="
+              background: transparent;
+              color: var(--pink-500);
+              border: 1.5px solid var(--pink-300);
+            "
+          >
+            Batal
+          </button>
+          <button onclick="submitUpdate()">
+            <i class="ti ti-check"></i>
+            Simpan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast">
+      <i class="ti ti-check" id="toastIcon"></i>
+      <span id="toastMsg"></span>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+      if (
+        window.location.pathname.includes('dashboard.html') ||
+        window.location.pathname === '/' ||
+        window.location.pathname.endsWith('/')
+      ) {
+        loadDashboard();
+      }
+    </script>
+  </body>
+</html>
