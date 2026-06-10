@@ -17,7 +17,7 @@ const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: '', // sesuaikan password MySQL kamu
-  database: 'laundry',
+  database: 'titipin_laundry',
 });
 
 db.connect((err) => {
@@ -25,7 +25,7 @@ db.connect((err) => {
     console.error('❌ Koneksi DB gagal:', err);
     return;
   }
-  console.log('✅ Terhubung ke MySQL — laundry');
+  console.log('✅ Terhubung ke MySQL — titipin_laundry');
 });
 
 // =============================================
