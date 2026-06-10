@@ -1,6 +1,6 @@
 {
   "name": "titipin-laundry",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Smart Laundry Pickup & Delivery System",
   "main": "server.js",
   "scripts": {
