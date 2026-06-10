@@ -1,4 +1,5 @@
-const API_URL = 'http://localhost:3000/api';
+//  URL otomatis mengikuti domain tempat website ini dibuka
+const API_URL = window.location.origin + '/api';
 
 // =============================================
 //  TOAST NOTIFICATION

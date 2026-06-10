@@ -1,23 +1,25 @@
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs'); //  Sudah diganti ke bcryptjs agar aman di cloud
 
 const app = express();
-const PORT = 3000;
+//  Port dibuat dinamis (ikut aturan Railway, kalau di laptop pakai 3000)
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
 // =============================================
-//  DATABASE CONNECTION
+//  DATABASE CONNECTION (Dibuat otomatis mendeteksi variabel Railway)
 // =============================================
 const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '', // sesuaikan password MySQL kamu
-  database: 'titipin_laundry',
+  host: process.env.MYSQLHOST || 'localhost',
+  user: process.env.MYSQLUSER || 'root',
+  password: process.env.MYSQLPASSWORD || '',
+  database: process.env.MYSQLDATABASE || 'titipin_laundry',
+  port: process.env.MYSQLPORT || 3306,
 });
 
 db.connect((err) => {
@@ -25,7 +27,7 @@ db.connect((err) => {
     console.error('❌ Koneksi DB gagal:', err);
     return;
   }
-  console.log('✅ Terhubung ke MySQL — titipin_laundry');
+  console.log('✅ Terhubung ke MySQL Railway/Lokal');
 });
 
 // =============================================
