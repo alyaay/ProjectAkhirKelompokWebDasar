@@ -12,22 +12,26 @@ app.use(express.json());
 app.use(express.static(__dirname));
 
 // =============================================
-//  DATABASE CONNECTION (Dibuat otomatis mendeteksi variabel Railway)
+// 🔌 DATABASE CONNECTION (Pakai Pool agar tidak crash saat idle)
 // =============================================
-const db = mysql.createConnection({
+const db = mysql.createPool({
   host: process.env.MYSQLHOST || 'localhost',
   user: process.env.MYSQLUSER || 'root',
   password: process.env.MYSQLPASSWORD || '',
   database: process.env.MYSQLDATABASE || 'titipin_laundry',
   port: process.env.MYSQLPORT || 3306,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
 });
 
-db.connect((err) => {
+db.getConnection((err, connection) => {
   if (err) {
     console.error('❌ Koneksi DB gagal:', err);
     return;
   }
   console.log('✅ Terhubung ke MySQL Railway/Lokal');
+  connection.release();
 });
 
 // =============================================
